@@ -48,7 +48,7 @@ node {
         withCredentials([usernamePassword(credentialsId: 'kama-kama', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
           sh "sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config -n stage get secret kama-kama ||  sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config --namespace=stage create secret docker-registry kama-kama --docker-server ${acr} --docker-username $USERNAME --docker-password $PASSWORD"
         }
-        sh("sed -i.bak 's#${appRepo}#${imageTag}#' ./k8s/stage/*.yaml")
+        sh("sed -i.bak 's#${appRepo}#${imageTag}#' ./k8s/release/*.yaml")
         sh("sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config --namespace=stage apply -f k8s/release/")
         sh("echo http://`sudo kubectl -kubeconfig ~jenkinsdemo5/.kube/config --namespace=stage get service/${appName} --output=json | jq -r '.status.loadBalancer.ingress[0].ip'` > ${appName}")
         break
