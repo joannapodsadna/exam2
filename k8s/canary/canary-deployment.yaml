@@ -6,7 +6,7 @@ metadata:
   labels:
     app: whoami
 spec:
-  replicas: 4
+  replicas: 1
   selector:
     matchLabels:
       app: whoami
@@ -14,7 +14,7 @@ spec:
     metadata:
       labels:
         app: whoami
-        env: dev
+        env: canary
     spec:
       containers:
       - name: whoami
@@ -29,11 +29,11 @@ apiVersion: v1
 metadata:
   name: whoami
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   ports:
   - name: http
     port: 80
-    targetPort: 8080
+    targetPort: 8000
     protocol: TCP
   selector:
     app: whoami
