@@ -19,7 +19,7 @@ node {
  {
   switch (env.BRANCH_NAME) {
     // Roll out to canary environment
-    
+      
     case "master":
         // Change deployed image in master to the one we just built
         sh("sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config get ns production || sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config create ns production")
