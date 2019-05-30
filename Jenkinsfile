@@ -35,7 +35,7 @@ node {
         // Change deployed image in canary to the one we just built
         sh("sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config get ns production || sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config create ns production")
         withCredentials([usernamePassword(credentialsId: 'kama-kama', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-          sh " sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config -n production get secret mysecret || kubectl --namespace=production create secret docker-registry mysecret --docker-server ${acr} --docker-username $USERNAME --docker-password $PASSWORD"
+          sh " sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config -n production get secret kama-kama || kubectl --namespace=production create secret docker-registry kama-kama --docker-server ${acr} --docker-username $USERNAME --docker-password $PASSWORD"
         }
         sh("sed -i.bak 's#${appRepo}#${imageTag}#' ./k8s/canary/*.yaml")
         sh("sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config --namespace=production apply -f k8s/canary/")
@@ -46,7 +46,7 @@ node {
         // Change deployed image in canary to the one we just built
         sh("sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config get ns stage || sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config create ns stage")
         withCredentials([usernamePassword(credentialsId: 'kama-kama', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-          sh "sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config -n stage get secret mysecret ||  sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config --namespace=stage create secret docker-registry mysecret --docker-server ${acr} --docker-username $USERNAME --docker-password $PASSWORD"
+          sh "sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config -n stage get secret kama-kama ||  sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config --namespace=stage create secret docker-registry kama-kama --docker-server ${acr} --docker-username $USERNAME --docker-password $PASSWORD"
         }
         sh("sed -i.bak 's#${appRepo}#${imageTag}#' ./k8s/stage/*.yaml")
         sh("sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config --namespace=stage apply -f k8s/stage/")
@@ -58,7 +58,7 @@ node {
         // Create namespace if it doesn't exist
         sh("sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config get ns dev || sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config create ns dev")
         withCredentials([usernamePassword(credentialsId: 'kama-kama', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-          sh "sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config -n dev get secret mysecret || sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config --namespace=dev create secret docker-registry mysecret --docker-server ${acr} --docker-username $USERNAME --docker-password $PASSWORD"
+          sh "sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config -n dev get secret kama-kama || sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config --namespace=dev create secret docker-registry kama-kama --docker-server ${acr} --docker-username $USERNAME --docker-password $PASSWORD"
         }
         // Don't use public load balancing for development branches
         sh("sed -i.bak 's#${appRepo}#${imageTag}#' ./k8s/dev/*.yaml")
