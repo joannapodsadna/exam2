@@ -66,7 +66,7 @@ node {
         sh("echo http://`sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config --namespace=dev get service/${appName} --output=json | jq -r '.status.loadBalancer.ingress[0].ip'` > ${appName}")
 
     default:
-        // Create namespace if it doesn't exist
+        // Create namespace if it doesn't exist 
         sh("kubectl get ns ${appName}-${env.BRANCH_NAME} || kubectl create ns ${appName}-${env.BRANCH_NAME}")
         withCredentials([usernamePassword(credentialsId: 'kama-kama', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
           sh "kubectl -n ${appName}-${env.BRANCH_NAME} get secret kama-kama || kubectl --namespace=${appName}-${env.BRANCH_NAME} create secret docker-registry kama-kama --docker-server ${acr} --docker-username $USERNAME --docker-password $PASSWORD"
