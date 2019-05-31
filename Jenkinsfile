@@ -58,7 +58,7 @@ node {
         // Create namespace if it doesn't exist
         sh("sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config get ns dev || sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config create ns dev")
         withCredentials([usernamePassword(credentialsId: 'kama-kama', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-          sh "sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config -n dev get secret kama-kama2 || sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config --namespace=dev create secret docker-registry kama-kama2 --docker-server ${acr} --docker-username $USERNAME --docker-password $PASSWORD"
+          sh "sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config -n dev get secret kama-kama || sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config --namespace=dev create secret docker-registry kama-kama --docker-server ${acr} --docker-username $USERNAME --docker-password $PASSWORD"
         }
         // Don't use public load balancing for development branches
         sh("sed -i.bak 's#${appRepo}#${imageTag}#' ./k8s/dev/*.yaml")
