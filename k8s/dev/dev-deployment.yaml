@@ -22,7 +22,7 @@ spec:
         ports:
         - containerPort: 8000
       imagePullSecrets:
-      - name: kama-kama2
+      - name: kama-kama
 ---
 kind: Service
 apiVersion: v1
