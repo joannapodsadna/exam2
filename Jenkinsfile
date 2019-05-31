@@ -52,7 +52,7 @@ node {
         sh("echo http://`sudo kubectl -kubeconfig ~jenkinsdemo5/.kube/config --namespace=stage get service/${appName} --output=json | jq -r '.status.loadBalancer.ingress[0].ip'` > ${appName}")
         break
 
-    // Roll out a dev environment
+    // Roll out a dev environment 
     case "dev":
         // Create namespace if it doesn't exist
         sh("sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config get ns dev || sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config create ns dev")
