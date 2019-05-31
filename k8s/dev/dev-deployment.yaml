@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: whoami
-        image: acrdemo5.azurecr.io/whoami:v1
+        image: acrdemo5.azurecr.io/whoami:v.0.1.0
         ports:
         - containerPort: 8000
       imagePullSecrets:
