@@ -18,8 +18,7 @@ node {
  stage ("Deploy Application on Azure Kubernetes Service")
  {
   switch (env.BRANCH_NAME) {
-    // Roll out to canary environment 
-    
+
     case "master":
         // Change deployed image in master to the one we just built
         sh("sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config get ns production || sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config create ns production")
@@ -66,10 +65,10 @@ node {
         sh("echo http://`sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config --namespace=dev get service/${appName} --output=json | jq -r '.status.loadBalancer.ingress[0].ip'` > ${appName}")
 
     default:
-        // Create namespace if it doesn't exist
+        // Create namespace if it doesn't exist 
         sh("kubectl get ns ${appName}-${env.BRANCH_NAME} || kubectl create ns ${appName}-${env.BRANCH_NAME}")
-        withCredentials([usernamePassword(credentialsId: 'acr_auth', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-          sh "kubectl -n ${appName}-${env.BRANCH_NAME} get secret mysecret || kubectl --namespace=${appName}-${env.BRANCH_NAME} create secret docker-registry mysecret --docker-server ${acr} --docker-username $USERNAME --docker-password $PASSWORD"
+        withCredentials([usernamePassword(credentialsId: 'kama-kama', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+          sh "kubectl -n ${appName}-${env.BRANCH_NAME} get secret kama-kama || kubectl --namespace=${appName}-${env.BRANCH_NAME} create secret docker-registry kama-kama --docker-server ${acr} --docker-username $USERNAME --docker-password $PASSWORD"
         } 
         sh("sed -i.bak 's#${appRepo}#${imageTag}#' ./k8s/${env.BRANCH_NAME}/*.yaml")
         sh("kubectl --namespace=${appName}-${env.BRANCH_NAME} apply -f k8s/${env.BRANCH_NAME}/")
