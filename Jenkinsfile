@@ -45,11 +45,11 @@ node {
         // Change deployed image in canary to the one we just built
         sh("sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config get ns stage || sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config create ns stage")
         withCredentials([usernamePassword(credentialsId: 'kama-kama', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-          sh "sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config -n stage get secret kama-kama ||  sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config --namespace=stage create secret docker-registry kama-kama --docker-server ${acr} --docker-username $USERNAME --docker-password $PASSWORD"
+          sh "sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config -n stage get secret kama-kama || sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config --namespace=stage create secret docker-registry kama-kama --docker-server ${acr} --docker-username $USERNAME --docker-password $PASSWORD"
         }
         sh("sed -i.bak 's#${appRepo}#${imageTag}#' ./k8s/release/*.yaml")
         sh("sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config --namespace=stage apply -f k8s/release/")
-        sh("echo http://`sudo kubectl -kubeconfig ~jenkinsdemo5/.kube/config --namespace=stage get service/${appName} --output=json | jq -r '.status.loadBalancer.ingress[0].ip'` > ${appName}")
+        sh("echo http://`sudo kubectl --kubeconfig ~jenkinsdemo5/.kube/config --namespace=stage get service/${appName} --output=json | jq -r '.status.loadBalancer.ingress[0].ip'` > ${appName}")
         break
 
     // Roll out a dev environment 
