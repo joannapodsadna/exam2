@@ -59,7 +59,7 @@ node {
         sh("whoami")
         sh("cd")
         sh("pwd")
-        sh("kubectl get ns dev || kubectl  --kubeconfig  create ns dev")
+        sh("kubectl get ns dev || kubectl  create ns dev")
         withCredentials([usernamePassword(credentialsId: 'kama-kama', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
           sh "kubectl  -n dev get secret kama-kama || kubectl  --namespace=dev create secret docker-registry kama-kama --docker-server ${acr} --docker-username $USERNAME --docker-password $PASSWORD"
         }
