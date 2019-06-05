@@ -56,7 +56,7 @@ node {
     // Roll out a dev environment
     case "dev":
         // Create namespace if it doesn't exist
-        sh("kubectl --kubeconfig ~jenkinsdemo5/.kube/config get ns dev || kubectl  create ns dev")
+        sh("kubectl --kubeconfig ~jenkinsdemo5/.kube/config get ns dev || kubectl --kubeconfig ~jenkinsdemo5/.kube/config create ns dev")
         withCredentials([usernamePassword(credentialsId: 'kama-kama', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
           sh "kubectl --kubeconfig ~jenkinsdemo5/.kube/config -n dev get secret kama-kama || kubectl --kubeconfig ~jenkinsdemo5/.kube/config --namespace=dev create secret docker-registry kama-kama --docker-server ${acr} --docker-username $USERNAME --docker-password $PASSWORD"
         }
