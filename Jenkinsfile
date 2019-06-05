@@ -56,14 +56,14 @@ node {
     // Roll out a dev environment
     case "dev":
         // Create namespace if it doesn't exist
-        sh("kubectl --kubeconfig ~jenkinsdemo5/.kube/config get ns dev || kubectl --kubeconfig ~jenkinsdemo5/.kube/config create ns dev")
+        sh("kubectl  get ns dev || kubectl  create ns dev")
         withCredentials([usernamePassword(credentialsId: 'kama-kama', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-          sh "kubectl --kubeconfig ~jenkinsdemo5/.kube/config -n dev get secret kama-kama || kubectl --kubeconfig ~jenkinsdemo5/.kube/config --namespace=dev create secret docker-registry kama-kama --docker-server ${acr} --docker-username $USERNAME --docker-password $PASSWORD"
+          sh "kubectl  -n dev get secret kama-kama || kubectl  --namespace=dev create secret docker-registry kama-kama --docker-server ${acr} --docker-username $USERNAME --docker-password $PASSWORD"
         }
         // Don't use public load balancing for development branches
         sh("sed -i.bak 's#${appRepo}#${imageTag}#' ./k8s/dev/*.yaml")
-        sh("kubectl --kubeconfig ~jenkinsdemo5/.kube/config --namespace=dev apply -f k8s/dev/")
-        sh("echo http://`kubectl --kubeconfig ~jenkinsdemo5/.kube/config --namespace=dev get service/${appName} --output=json | jq -r '.status.loadBalancer.ingress[0].ip'` > ${appName}")
+        sh("kubectl  --namespace=dev apply -f k8s/dev/")
+        sh("echo http://`kubectl  --namespace=dev get service/${appName} --output=json | jq -r '.status.loadBalancer.ingress[0].ip'` > ${appName}")
 
     default:
         // Create namespace if it doesn't exist
