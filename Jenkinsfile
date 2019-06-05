@@ -59,14 +59,14 @@ node {
         sh("whoami")
         sh("cd")
         sh("pwd")
-        sh("kubectl --kubeconfig /opt/jenkins/config get ns dev || kubectl  --kubeconfig /opt/jenkins/config create ns dev")
+        sh("kubectl get ns dev || kubectl  --kubeconfig  create ns dev")
         withCredentials([usernamePassword(credentialsId: 'kama-kama', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-          sh "kubectl --kubeconfig /opt/jenkins/config -n dev get secret kama-kama || kubectl --kubeconfig /opt/jenkins/config --namespace=dev create secret docker-registry kama-kama --docker-server ${acr} --docker-username $USERNAME --docker-password $PASSWORD"
+          sh "kubectl  -n dev get secret kama-kama || kubectl  --namespace=dev create secret docker-registry kama-kama --docker-server ${acr} --docker-username $USERNAME --docker-password $PASSWORD"
         }
         // Don't use public load balancing for development branches
         sh("sed -i.bak 's#${appRepo}#${imageTag}#' ./k8s/dev/*.yaml")
-        sh("kubectl --kubeconfig /opt/jenkins/config --namespace=dev apply -f k8s/dev/")
-        sh("echo http://`kubectl --kubeconfig /opt/jenkins/config --namespace=dev get service/${appName} --output=json | jq -r '.status.loadBalancer.ingress[0].ip'` > ${appName}")
+        sh("kubectl  --namespace=dev apply -f k8s/dev/")
+        sh("echo http://`kubectl  --namespace=dev get service/${appName} --output=json | jq -r '.status.loadBalancer.ingress[0].ip'` > ${appName}")
 
     default:
         // Create namespace if it doesn't exist
