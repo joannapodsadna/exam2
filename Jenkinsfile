@@ -25,13 +25,14 @@ node {
         withCredentials([usernamePassword(credentialsId: 'kama-kama', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
            sh " kubectl -n production get secret kama-kama || kubectl  --namespace=production create secret docker-registry kama-kama --docker-server ${acr} --docker-username $USERNAME --docker-password $PASSWORD"
         } 
-        sh("sed -i.bak 's#${appRepo}#${imageTag}#' ./k8s/production/*.yaml")
+             sh("sed -i.bak 's#${appRepo}#${imageTag}#' ./k8s/production/*.yaml")
         sh("kubectl  --namespace=production apply -f k8s/production/")
-        sh("echo http://`kubectl --namespace= production get service/${appName} --output=json | jq -r '.status.loadBalancer.ingress[0].ip'` > ${appName}")
+        sh("echo http://`kubectl  --namespace= production get service/${appName} --output=json | jq -r '.status.loadBalancer.ingress[0].ip'` > ${appName}
         break
 
     case "canary":
         // Change deployed image in canary to the one we just built
+
         sh("kubectl get ns production || kubectl  create ns production")
         withCredentials([usernamePassword(credentialsId: 'kama-kama', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
           sh "kubectl  -n production get secret kama-kama || kubectl --namespace=production create secret docker-registry kama-kama --docker-server ${acr} --docker-username $USERNAME --docker-password $PASSWORD"
@@ -39,10 +40,12 @@ node {
         sh("sed -i.bak 's#${appRepo}#${imageTag}#' ./k8s/canary/*.yaml")
         sh("kubectl --namespace=production apply -f k8s/canary/")
         sh("echo http://`kubectl --namespace= production get service/${appName} --output=json | jq -r '.status.loadBalancer.ingress[0].ip'` > ${appName}")
+
         break
 
   case "release":
         // Change deployed image in canary to the one we just built
+
         sh(" kubectl  get ns stage ||  kubectl  create ns stage")
         withCredentials([usernamePassword(credentialsId: 'kama-kama', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
           sh " kubectl  -n stage get secret kama-kama ||  kubectl  --namespace=stage create secret docker-registry kama-kama --docker-server ${acr} --docker-username $USERNAME --docker-password $PASSWORD"
@@ -50,11 +53,13 @@ node {
         sh("sed -i.bak 's#${appRepo}#${imageTag}#' ./k8s/release/*.yaml")
         sh(" kubectl - --namespace=stage apply -f k8s/release/")
         sh("echo http://` kubectl --namespace=stage get service/${appName} --output=json | jq -r '.status.loadBalancer.ingress[0].ip'` > ${appName}")
+
         break
 
     // Roll out a dev environment 
     case "dev":
         // Create namespace if it doesn't exist
+
         sh(" kubectl  get ns dev || sudo kubectl  create ns dev")
         withCredentials([usernamePassword(credentialsId: 'kama-kama', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
           sh " kubectl  -n dev get secret kama-kama || sudo kubectl  --namespace=dev create secret docker-registry kama-kama --docker-server ${acr} --docker-username $USERNAME --docker-password $PASSWORD"
@@ -64,11 +69,12 @@ node {
         sh(" kubectl  --namespace=dev apply -f k8s/dev/")
         sh("echo http://` kubectl --namespace=dev get service/${appName} --output=json | jq -r '.status.loadBalancer.ingress[0].ip'` > ${appName}")
 
+
     default:
         // Create namespace if it doesn't exist 
         sh("kubectl get ns ${appName}-${env.BRANCH_NAME} || kubectl create ns ${appName}-${env.BRANCH_NAME}")
         withCredentials([usernamePassword(credentialsId: 'kama-kama', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-          sh "kubectl -n ${appName}-${env.BRANCH_NAME} get secret kama-kama || kubectl --namespace=${appName}-${env.BRANCH_NAME} create secret docker-registry kama-kama --docker-server ${acr} --docker-username $USERNAME --docker-password $PASSWORD"
+          sh "kubectl -n ${appName}-${env.BRANCH_NAME} get secret kama-kama4 || kubectl --namespace=${appName}-${env.BRANCH_NAME} create secret docker-registry kama-kama4 --docker-server ${acr} --docker-username $USERNAME --docker-password $PASSWORD"
         } 
         sh("sed -i.bak 's#${appRepo}#${imageTag}#' ./k8s/${env.BRANCH_NAME}/*.yaml")
         sh("kubectl --namespace=${appName}-${env.BRANCH_NAME} apply -f k8s/${env.BRANCH_NAME}/")
